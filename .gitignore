@@ -1,0 +1,19 @@
+# compiled output
+
+cartoDb-ts/build/*
+cartoDb-ts/dist/*
+
+
+# dependencies
+
+cartoDb-ts/node_modules
+cartoDb/node_modules
+
+# IDE - VSCode
+cartoDb/.vscode/*
+cartoDb-ts/.vscode/*
+
+# cache
+
+cartoDb/.cache/*
+cartoDb-ts/.cache/*
