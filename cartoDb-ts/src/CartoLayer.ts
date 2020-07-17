@@ -7,10 +7,17 @@ export abstract class CartoLayer {
     abstract options: LayerOptions;
     private changeSubject$: Subject<LayerOptions> = new Subject();
     public changeSubjectObs$: Observable<LayerOptions>;
+    public isVisible = true;
     constructor(){
       this.changeSubjectObs$ = this.changeSubject$.asObservable();
+
     }
     triggerChange(newOption: LayerOptions){
       this.changeSubject$.next(newOption);
+    }
+    setVisibility(value: boolean) {
+      this.isVisible = value;
+      this.options.isVisible = value;
+      this.triggerChange(this.options);
     }
   }

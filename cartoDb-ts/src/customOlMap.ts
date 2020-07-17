@@ -42,7 +42,10 @@ export class CustomOlMap extends CustomMap<OlMap,Layer> {
         url: `${this.baseUrlPrefix}/${account}/${this.baseUrlSuffix}/${layergroupid}/0/{z}/{x}/{y}.png`
       });
 
-      return  new TileLayer({ source });
+      return  new TileLayer({
+        visible: cartoLayer.options.isVisible !== undefined ? cartoLayer.options.isVisible : true,
+        source
+       });
 
     }
     createCartoDbLayer(account: string, layer: CartoLayer): TileLayer{
@@ -52,6 +55,7 @@ export class CustomOlMap extends CustomMap<OlMap,Layer> {
         config: { layers: [{options, type}] }
       });
       return new TileLayer({
+        visible: layer.options.isVisible !== undefined ? layer.options.isVisible : true,
         source
       });
     }
@@ -60,7 +64,12 @@ export class CustomOlMap extends CustomMap<OlMap,Layer> {
       if (old) {
         const newLayer = await this.createMapLayer(account,newCartoLayer);
         old?.setSource(newLayer.getSource());
+        old?.setVisible(newLayer.getVisible())
         this.layerMap.set(newCartoLayer,old);
       }
+    }
+    changeVisibility(cartoLayer: CartoLayer, isVisible: boolean) {
+      const mapLayer = this.layerMap.get(cartoLayer);
+      mapLayer?.setVisible(isVisible);
     }
 }

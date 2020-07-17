@@ -15,6 +15,7 @@ export class LayerOptions {
   cartocss_version?: string;
   cartocss?: string;
   sql?: string;
+  isVisible?: boolean;
 }
 export interface CartoTileLayerOptions {
   cartocss_version?: string;

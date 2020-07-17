@@ -30,10 +30,23 @@ const getAll = async () => {
      *  Update Query after 5 seconds
      */
     setTimeout(()=> {
+        console.log('CHANGE QUERY');
         (client.layers.find(lyr => lyr.type === LayerTypes.CARTODB) as CartoDbTileLayer)
         .setQuery(`select * from european_countries_e LIMIT 10`);
     },5000);
-
+    /**
+     * change layer visibility to false
+     */
+    setTimeout(()=> {
+        console.log('CHANGE VISIBILITY',false);
+        (client.layers.find(lyr => lyr.type === LayerTypes.CARTODB) as CartoDbTileLayer)
+        .setVisibility(false);
+    },10000);
+    setTimeout(()=> {
+        console.log('CHANGE VISIBILITY',true);
+        (client.layers.find(lyr => lyr.type === LayerTypes.CARTODB) as CartoDbTileLayer)
+        .setVisibility(true);
+    },11000);
 }
 
 getAll();

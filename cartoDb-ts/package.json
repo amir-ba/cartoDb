@@ -3,9 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "start-build": "tsc -w",
-    "start-run": "nodemon ./build/index.js localhost 8080",
-    "start": "concurrently  npm:start-*"
+    "start": "parcel ./src/index.html"
   },
   "keywords": [],
   "author": "",
@@ -21,6 +19,7 @@
     "rxjs": "^6.6.0"
   },
   "devDependencies": {
-    "typescript": "^3.9.6"
+    "typescript": "^3.9.6",
+    "parcel": "1.12.4"
   }
 }

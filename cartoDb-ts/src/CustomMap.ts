@@ -17,6 +17,7 @@ export abstract class CustomMap<IMapObjType extends MapObjTyp,ILayerObjTpe exten
   abstract createCartoDbLayer(account: string, cartoLayer: CartoLayer): ILayerObjTpe;
   abstract addLayerToMap(layers: Array<ILayerObjTpe>): void;
   abstract updateMapLayer(oldCartoLayer: CartoLayer, newCartoLayer: CartoLayer, account: string): void;
+  abstract changeVisibility(cartoLayer: CartoLayer, isVisible: boolean): void;
   async getTileConfig(account: string, cartoLayer: CartoLayer ) {
       const amendedConfigs: CartoLayer = { ...cartoLayer, type: LayerTypes.HTTP } as CartoLayer;
       const fetchResponse = await fetch(this.configResolverUrl, {
