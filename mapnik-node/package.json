@@ -1,0 +1,21 @@
+{
+  "private": true,
+  "name": "node-carto-code-test",
+  "version": "1.0.0",
+  "main": "server.js",
+  "keywords": [],
+  "author": "",
+  "license": "BSD-3-Clause",
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "generic-pool": "^3.7.1",
+    "kill-port": "^1.6.1",
+    "mapnik": "^4.4.0",
+    "nodemon": "^2.0.4"
+  },
+  "scripts": {
+    "mapnik-example": "node mapnik-example.js",
+    "start": "nodemon server.js"
+  }
+}

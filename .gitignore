@@ -8,12 +8,14 @@ cartoDb-ts/dist/*
 
 cartoDb-ts/node_modules
 cartoDb/node_modules
+mapnik-node/node_modules
 
 # IDE - VSCode
 cartoDb/.vscode/*
 cartoDb-ts/.vscode/*
-
+mapnik-node/.vscode/*
 # cache
 
 cartoDb/.cache/*
 cartoDb-ts/.cache/*
+mapnik-node/.cache/*
