@@ -1,6 +1,6 @@
 import { LayerOptions } from "./models/config-interface";
 import { LayerTypes } from "./models/LayerTypes";
-import { CartoLayer } from "./CartoLayer";
+import { CartoLayer, ICartoLayer } from "./CartoLayer";
 
 export class CartoTileLayer extends CartoLayer {
     public minZoom?: string;
@@ -9,9 +9,10 @@ export class CartoTileLayer extends CartoLayer {
     public urlTemplate?: string;
     public type: LayerTypes;
     public options: LayerOptions;
-    constructor(public layer: CartoLayer){
+    public account: string
+    constructor(public layer: ICartoLayer){
         super();
-        const { type, options } = layer;
+        const { type, options, account } = layer;
         const { maxZoom, minZoom, attribution, urlTemplate } = options;
         this.options = options;
         this.type = type;
@@ -19,5 +20,6 @@ export class CartoTileLayer extends CartoLayer {
         this.minZoom = minZoom;
         this.attribution = attribution;
         this.urlTemplate = urlTemplate;
+        this.account = account;
     }
 }

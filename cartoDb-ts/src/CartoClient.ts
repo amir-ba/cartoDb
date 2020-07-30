@@ -1,16 +1,13 @@
-import { CartoLayer } from "./models/config-interface";
-import { MapLayerTyp, CustomMap, MapObjTyp } from "./CustomMap";
+import { CartoLayer, ICartoLayer } from "./CartoLayer";
+import { MapLayerTyp, CustomMap, MapObjTyp, MapFactory } from "./CustomMap";
 import { CartoDbTileLayer } from "./CartoDbTileLayer";
 import { CartoTileLayer } from "./CartoTileLayer";
 
 import { LayerTypes } from "./models/LayerTypes";
 
-export class CartoClient {
-    public layers: Array<CartoLayer>= [];
-    public mapLibrary = 'openlayers';
-    public map: CustomMap<MapObjTyp,MapLayerTyp>| undefined;
-    constructor(public userName: string, public apiKKey?: string) {}
-    addLayers(layer: CartoLayer){
+
+export class LayerFactory {
+    public  static createLayer(layer: ICartoLayer): CartoLayer {
         let layerClass;
         switch(layer.type) {
             case LayerTypes.CARTODB:
@@ -19,19 +16,22 @@ export class CartoClient {
             default:
                 layerClass = new CartoTileLayer(layer)
                 break;
-
         }
-        this.layers.push(layerClass);
+        return layerClass;
     }
-    getMappableLayers() : Promise<Array<MapLayerTyp>> {
-        if (!(this.map instanceof CustomMap)) {
-            throw new Error('no map object');
-        }
-        return Promise.all(this.layers.map((layer: CartoLayer) =>{
-            //@ts-ignore
-            const mappableLayer = this.map.createMapLayer(this.userName, layer);
-            return mappableLayer;
-        }));
-    }
+} 
 
+
+export class CartoClient {
+    private _layers: Array<CartoLayer>= [];
+    constructor(public userName: string, public map: MapFactory, public apiKKey?: string) {
+    }
+    async addLayer(layer: ICartoLayer): Promise<MapLayerTyp> {
+        const layerClass = LayerFactory.createLayer(layer);
+        layerClass.attach(this.map);
+        return this.map?.createMapLayer(layerClass) as MapLayerTyp;
+    }
+    get layers(): Array<CartoLayer> {
+        return this._layers
+    }
 }

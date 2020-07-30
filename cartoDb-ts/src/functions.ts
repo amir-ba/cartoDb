@@ -1,6 +1,4 @@
 import { CartoDbConfig } from "./models/config-interface";
-import { CustomMap, CustomOlMap } from "./CustomMap";
-import { CartoClient } from "./CartoClient";
 
 export async function http<T>(url: string): Promise<T> {
     const response = await fetch(url);

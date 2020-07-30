@@ -1,4 +1,5 @@
-import  OlMap   from 'ol/Map';
+import 'ol/ol.css';
+import OlMap from 'ol/Map';
 import View, { ViewOptions } from 'ol/View';
 import { CustomMap } from './CustomMap';
 import TileLayer from 'ol/layer/Tile';
@@ -7,6 +8,8 @@ import {CartoDB} from 'ol/source';
 import XYZ from 'ol/source/XYZ';
 import { CartoMapApiResponse } from './models/map-api-response';
 import { CartoLayer } from './CartoLayer';
+import { LayerTypes } from './models/LayerTypes';
+
 export class CustomOlMap extends CustomMap<OlMap,Layer> {
     public mapInstance: OlMap;
     constructor(public mapElId: string, public mapViewOptions?: ViewOptions){
@@ -28,25 +31,29 @@ export class CustomOlMap extends CustomMap<OlMap,Layer> {
       const newView = new View(viewOptions);
       this.mapInstance?.setView(newView);
     }
-    addLayerToMap(layers: Array<Layer>): void {
+    addLayersToMap(layers: Array<Layer>): void {
       layers.map(layer => this.mapInstance?.addLayer(layer));
     }
-    createTileLayer(account: string, tileConfig: CartoMapApiResponse, cartoLayer: CartoLayer): TileLayer {
+    createTileLayer(tileConfig: CartoMapApiResponse, cartoLayer: CartoLayer): TileLayer {
       const { layergroupid } = tileConfig;
-      const { options, } = cartoLayer;
+      const { options, account} = cartoLayer;
+      if (cartoLayer.type === LayerTypes.CARTODB) {
+        return this.createCartoDbLayer(account,cartoLayer);
+      } else {
 
-      const source = new XYZ({
-        minZoom: options.minZoom ? parseInt(options.minZoom, 10): undefined,
-        maxZoom: options.maxZoom ? parseInt(options.maxZoom, 10): undefined,
-        attributions: options.attribution,
-        url: `${this.baseUrlPrefix}/${account}/${this.baseUrlSuffix}/${layergroupid}/0/{z}/{x}/{y}.png`
-      });
+        const source = new XYZ({
+          minZoom: options.minZoom ? parseInt(options.minZoom, 10): undefined,
+          maxZoom: options.maxZoom ? parseInt(options.maxZoom, 10): undefined,
+          attributions: options.attribution,
+          url: `${this.baseUrlPrefix}/${account}/${this.baseUrlSuffix}/${layergroupid}/0/{z}/{x}/{y}.png`
+        });
+  
+        return  new TileLayer({
+          visible: cartoLayer.options.isVisible !== undefined ? cartoLayer.options.isVisible : true,
+          source
+         });
 
-      return  new TileLayer({
-        visible: cartoLayer.options.isVisible !== undefined ? cartoLayer.options.isVisible : true,
-        source
-       });
-
+      }
     }
     createCartoDbLayer(account: string, layer: CartoLayer): TileLayer{
       const {type, options } = layer;
@@ -59,13 +66,13 @@ export class CustomOlMap extends CustomMap<OlMap,Layer> {
         source
       });
     }
-    async updateMapLayer(oldCartoLayer: CartoLayer, newCartoLayer: CartoLayer, account: string) {
-      const old = this.layerMap.get(oldCartoLayer);
+    async updateMapLayer(cartoLayer: CartoLayer) {
+      const old = this.layerMap.get(cartoLayer);
+      const newLayer = await this.createMapLayer(cartoLayer);
       if (old) {
-        const newLayer = await this.createMapLayer(account,newCartoLayer);
         old?.setSource(newLayer.getSource());
         old?.setVisible(newLayer.getVisible())
-        this.layerMap.set(newCartoLayer,old);
+        this.layerMap.set(cartoLayer,old);
       }
     }
     changeVisibility(cartoLayer: CartoLayer, isVisible: boolean) {
